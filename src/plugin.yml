@@ -1,0 +1,10 @@
+name: INVisible
+main: com.griefcraft.bukkit.BukkitPlugin
+version: 2.00
+website: http://griefcraft.com
+author: Hidendra
+description: Powerful command-line Inventory viewer.
+commands:
+  inv:
+    description: Passes commands to INVisible
+    usage: /<command>
