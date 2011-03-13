@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.griefcraft.minecraft.Inventory;
-import com.griefcraft.util.RegionFile;
+import com.griefcraft.minecraft.RegionFile;
 
 public class BetaWorldLoader implements ILoader {
 

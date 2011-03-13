@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.griefcraft.util;
+package com.griefcraft.minecraft;
 
 /*
  ** 2011 January 5
