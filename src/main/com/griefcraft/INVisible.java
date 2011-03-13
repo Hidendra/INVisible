@@ -27,11 +27,11 @@ import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.griefcraft.FilterOptions;
 import com.griefcraft.minecraft.Inventory;
 import com.griefcraft.minecraft.Inventory.Type;
 import com.griefcraft.minecraft.Item;
 import com.griefcraft.minecraft.World;
+import com.griefcraft.util.FilterOptions;
 
 public class INVisible {
 
