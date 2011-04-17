@@ -103,7 +103,12 @@ public class Item {
 
 	@Override
 	public String toString() {
+            //what if, in the future, new item gets added? Thou shall not return null!
+            if (items.get(id)!=null) {
 		return String.format("%s\t[slot: %d]\t[amount: %d]\t[damage: %d]", items.get(id), slot, amount, damage);
+            } else {
+                return String.format("%d\t[slot: %d]\t[amount: %d]\t[damage: %d]", id, slot, amount, damage);
+            }
 	}
 
 }
