@@ -131,18 +131,43 @@ public class INVisible {
 
 		for (int index = offset; index <= ceil; index++) {
 			Inventory inventory = inventories.get(index);
-			List<Item> items = inventory.getItems();
+                        if (inventory.notNull()) {
+                            List<Item> items = inventory.getItems();
 
-			log((index + 1) + ": " + inventory.toString() + " {");
+                            log((index + 1) + ": " + inventory.toString() + " {");
 
-			for (Item item : items) {
-				log("\t" + item.toString());
-			}
+                            for (Item item : items) {
+                                    log("\t" + item.toString());
+                            }
 
-			log("}");
-			log("");
+                            log("}");
+                            log("");
+                        }
 		}
 	}
+
+ 	/**
+	 * Displayes all inventories (for commandline output purposes)
+	 */
+        public void displayAll() {
+            List<Inventory> inventories = filter(world.getInventories());
+
+            for (int index = 0; index < inventories.size(); index++) {
+			Inventory inventory = inventories.get(index);
+                        if (inventory.notNull()) {  
+                            List<Item> items = inventory.getItems();
+
+                            log((index + 1) + ": " + inventory.toString() + " {");
+
+                            for (Item item : items) {
+                                    log("\t" + item.toString());
+                            }
+
+                            log("}");
+                            log("");
+                        }
+		}
+        }
 
 	/**
 	 * @return the amount of pages
@@ -512,8 +537,44 @@ public class INVisible {
 		System.out.print(str);
 	}
 
+
+        /**
+	 * Parses commandline arguments and feeds them to the interactive-mode parser
+         *
+         * @param args commandline arguments
+	 */
+        public void processArguments(String[] args) {
+            StringBuilder buffer = new StringBuilder();
+
+            for (int i = 0; i<args.length;i++) {
+                if (args[i].equals(";"))
+                {
+                    log("Command : "+buffer.toString());
+                    processCommand(buffer.toString());
+                    buffer = new StringBuilder();
+                } else {
+                    if (buffer.length()>0) { buffer.append(" "); }
+                    buffer.append(args[i]);
+                }
+            }
+
+            if (buffer.length()>0)
+            {
+                log("Command : "+buffer.toString());
+                processCommand(buffer.toString());
+            }
+        }
+
 	public static void main(String[] args) {
-		new INVisible();
+		//check, whether we use interactive-mode or command-line mode
+		if (args.length > 0) {
+                    INVisible i = new INVisible(null);
+                    i.processArguments(args);
+                    i.displayAll();
+                } else {
+			new INVisible();	
+		}
+		
 	}
 
 }

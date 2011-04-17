@@ -84,6 +84,11 @@ public class Inventory {
 		this.location = location;
 	}
 
+        public boolean notNull() {
+                return ((name != null) && (location != null) && (items != null));
+        }
+
+
 	@Override
 	public String toString() {
 		return String.format("%s (%s) %s %d items", name, type, location.toString(), items.size());
