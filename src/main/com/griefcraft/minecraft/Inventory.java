@@ -84,8 +84,8 @@ public class Inventory {
 		this.location = location;
 	}
 
-        public boolean notNull() {
-                return ((name != null) && (location != null) && (items != null));
+        public boolean isNull() {
+                return ((name == null) || (location == null) || (items == null));
         }
 
 

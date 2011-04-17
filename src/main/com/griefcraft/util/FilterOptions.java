@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.griefcraft.minecraft.Inventory.Type;
+import com.griefcraft.minecraft.Location;
 
 public class FilterOptions {
 
@@ -38,6 +39,17 @@ public class FilterOptions {
 	 * The name of the entity to filter by
 	 */
 	public static String NAME;
+
+
+        /**
+         * First corner of the search cuboid
+         **/
+        public static Location FIRST_CORNER = null;
+
+        /**
+         * Second corner
+         */
+        public static Location SECOND_CORNER = null;
 
 	/**
 	 * The current page number

@@ -3,7 +3,7 @@
 Instructions for command-line use
 ---------------------------------
 
-The comand-line functionality is very simple and straightforward. You just simply add commands, you would have entered in interactive mode, as a command-line arguments, separating them with commas. You don't need to bother about outputting the filter result, because after the last argument, the output of all filtered inventories (no paging ofcourse) will happen automatically.
+The comand-line functionality is very simple and straightforward. You just simply add commands, you would have entered in interactive mode, as a command-line arguments, separating them with semicolons. You don't need to bother about outputting the filter result, because after the last argument, the output of all filtered inventories (no paging ofcourse) will happen automatically.
 
 Examples
 --------

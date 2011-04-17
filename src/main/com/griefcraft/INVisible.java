@@ -30,6 +30,7 @@ import org.bukkit.entity.Player;
 import com.griefcraft.minecraft.Inventory;
 import com.griefcraft.minecraft.Inventory.Type;
 import com.griefcraft.minecraft.Item;
+import com.griefcraft.minecraft.Location;
 import com.griefcraft.minecraft.World;
 import com.griefcraft.util.FilterOptions;
 
@@ -131,18 +132,18 @@ public class INVisible {
 
 		for (int index = offset; index <= ceil; index++) {
 			Inventory inventory = inventories.get(index);
-                        if (inventory.notNull()) {
-                            List<Item> items = inventory.getItems();
+        
+                        List<Item> items = inventory.getItems();
 
-                            log((index + 1) + ": " + inventory.toString() + " {");
+                        log((index + 1) + ": " + inventory.toString() + " {");
 
-                            for (Item item : items) {
-                                    log("\t" + item.toString());
-                            }
-
-                            log("}");
-                            log("");
+                        for (Item item : items) {
+                                log("\t" + item.toString());
                         }
+
+                        log("}");
+                        log("");
+                        
 		}
 	}
 
@@ -151,21 +152,19 @@ public class INVisible {
 	 */
         public void displayAll() {
             List<Inventory> inventories = filter(world.getInventories());
-
+            log("");
             for (int index = 0; index < inventories.size(); index++) {
 			Inventory inventory = inventories.get(index);
-                        if (inventory.notNull()) {  
-                            List<Item> items = inventory.getItems();
+                        List<Item> items = inventory.getItems();
 
-                            log((index + 1) + ": " + inventory.toString() + " {");
+                        log((index + 1) + ": " + inventory.toString() + " {");
 
-                            for (Item item : items) {
-                                    log("\t" + item.toString());
-                            }
-
-                            log("}");
-                            log("");
+                        for (Item item : items) {
+                                log("\t" + item.toString());
                         }
+
+                        log("}");
+                        log("");
 		}
         }
 
@@ -200,6 +199,17 @@ public class INVisible {
 		// apply the individual filters now
 		Iterator<Inventory> iterator = clone.iterator();
 
+                // first, manually remove the null inventories
+                while (iterator.hasNext()) {
+                    if (iterator.next().isNull())
+                    {
+                        iterator.remove();
+                    }
+                }
+
+                //and once again
+                iterator = clone.iterator();
+
 		while (iterator.hasNext()) {
 			boolean remove = false;
 			Inventory inventory = iterator.next();
@@ -232,6 +242,12 @@ public class INVisible {
 				}
 			}
 
+                        if ((FilterOptions.FIRST_CORNER != null) && (FilterOptions.SECOND_CORNER != null)) {
+                                remove = remove || !isInRange(inventory.getLocation().getX(),FilterOptions.FIRST_CORNER.getX(),FilterOptions.SECOND_CORNER.getX());
+                                remove = remove || !isInRange(inventory.getLocation().getY(),FilterOptions.FIRST_CORNER.getY(),FilterOptions.SECOND_CORNER.getY());
+                                remove = remove || !isInRange(inventory.getLocation().getZ(),FilterOptions.FIRST_CORNER.getZ(),FilterOptions.SECOND_CORNER.getZ());
+                        }
+
 			if (remove) {
 				iterator.remove();
 			}
@@ -239,6 +255,21 @@ public class INVisible {
 
 		return clone;
 	}
+
+        /**
+	 * Checks, whether given value, lies within specified range (unordered)
+	 *
+	 * @param value given value
+         * @param firstEnd one endpoint, not neccesarily the lower one
+         * @param secondEnd second endpoint
+	 */
+        public boolean isInRange(int value, int firstEnd, int secondEnd) {
+            if (firstEnd < secondEnd) {
+                return ((value>=firstEnd) && (value<=secondEnd));
+            } else {
+                return ((value>=secondEnd) && (value<=firstEnd));
+            }
+        }
 
 	/**
 	 * Process a command
@@ -384,6 +415,50 @@ public class INVisible {
 				log("Filtering inventories by " + args);
 			}
 		}
+                
+                else if (command.equals("inside")) {
+                        if (args.isEmpty()) {
+                                log("Invalid argument");
+                        } else {
+                            int index = args.indexOf(" ");
+                            if (index==-1) {
+                                log("You must specify two coordinates separated by space");
+                            } else {
+                               String first = args.substring(0, index);
+                               String second = args.substring(index + 1);
+                               boolean success = true;
+                               Location firstLoc = null;
+                               Location secondLoc = null;
+
+                               try {
+                                    String[] coords = null;
+                                    coords = first.split("\\,");
+                                    firstLoc = new Location(Integer.parseInt(coords[0]),
+                                                            Integer.parseInt(coords[1]),
+                                                            Integer.parseInt(coords[2]));
+                                } catch (Exception e) {
+                                    log("Error in the first coordinate");
+                                    success = false;
+                                }
+
+                                try {
+                                    String[] coords = null;
+                                    coords = second.split("\\,");
+                                    secondLoc = new Location(Integer.parseInt(coords[0]),
+                                                            Integer.parseInt(coords[1]),
+                                                            Integer.parseInt(coords[2]));
+                                } catch (Exception e) {
+                                    log("Error in the second coordinate");
+                                    success = false;
+                                }
+
+                                if (success) {
+                                    FilterOptions.FIRST_CORNER = firstLoc;
+                                    FilterOptions.SECOND_CORNER = secondLoc;
+                                }
+                            }
+                        }
+                }
 
 		else if (command.equals("page")) {
 			try {
@@ -478,6 +553,13 @@ public class INVisible {
 		log("\tname <name>\tOnly show results for this name. It can be a Player name (ex. Notch)");
 		log("\t\t\tor a block name (ex. Furnace)");
 		log("\t\t\tCurrently: " + (FilterOptions.NAME == null ? "ALL" : FilterOptions.NAME));
+                log("\tinside <x1,y1,z1> <x2,y2,z2>");
+                log("\t\t\t Only show results inside a cuboid given by its two corners");
+                log("\t\t\t Example: inside 10,0,10 20,128,20");
+                log("\t\t\t Current corners:" + 
+                     (((FilterOptions.FIRST_CORNER == null) || (FilterOptions.SECOND_CORNER == null)) ? " ALL WORLD" :
+                     " First: "+FilterOptions.FIRST_CORNER.toString()+
+                     " Second: "+FilterOptions.SECOND_CORNER.toString()));
 		log("\tpage <num>\tCurrently: " + FilterOptions.PAGE);
 		log("\tperpage <num>\tCurrently: " + FilterOptions.PER_PAGE);
 		log("\tresetfilter\tReset the filter options");
